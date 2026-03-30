@@ -144,7 +144,7 @@ def hex_to_rgb(hex_color):
     return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
 
-def generate_pattern(image_data, width=None, height=None, max_size=64):
+def generate_pattern(image_data, width=None, height=None, max_size=104):
     """生成拼豆图纸 - 优化版"""
     # 读取图片
     img = Image.open(io.BytesIO(image_data))
