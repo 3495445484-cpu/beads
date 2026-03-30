@@ -27,37 +27,37 @@
         .header {
             background: white;
             border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
+            padding: 25px;
+            margin-bottom: 25px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
             text-align: center;
         }
         
         .header h1 {
             color: #333;
-            font-size: 2.2em;
+            font-size: 2em;
             margin-bottom: 10px;
         }
         
         .student-info {
             display: inline-flex;
-            gap: 30px;
+            gap: 25px;
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            padding: 15px 30px;
+            padding: 12px 25px;
             border-radius: 50px;
-            margin-top: 15px;
+            margin-top: 12px;
         }
         
         .student-info span {
             color: white;
             font-weight: bold;
-            font-size: 1.1em;
+            font-size: 1em;
         }
         
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 30px;
+            grid-template-columns: 350px 1fr;
+            gap: 25px;
         }
         
         .card {
@@ -69,21 +69,22 @@
         
         .card h2 {
             color: #333;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            font-size: 1.2em;
         }
         
         /* 上传区域 */
         .upload-area {
             border: 3px dashed #667eea;
-            border-radius: 15px;
-            padding: 30px;
+            border-radius: 12px;
+            padding: 25px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .upload-area:hover {
@@ -96,28 +97,49 @@
         }
         
         .upload-icon {
-            font-size: 3em;
-            margin-bottom: 10px;
+            font-size: 2.5em;
+            margin-bottom: 8px;
         }
         
         .upload-text {
             color: #666;
-            font-size: 1em;
+            font-size: 0.9em;
         }
         
         .preview-img {
             max-width: 100%;
-            max-height: 180px;
+            max-height: 150px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        /* 说明 */
+        .info-box {
+            background: #f8f9ff;
             border-radius: 10px;
-            margin-top: 15px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 0.85em;
+            color: #666;
+        }
+        
+        .info-box h4 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+        
+        .info-box ul {
+            margin-left: 15px;
+            line-height: 1.6;
         }
         
         /* 参数设置 */
         .params {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 15px;
         }
         
         .param-item {
@@ -127,18 +149,17 @@
         .param-item label {
             display: block;
             color: #666;
-            margin-bottom: 8px;
-            font-size: 0.9em;
+            margin-bottom: 6px;
+            font-size: 0.85em;
         }
         
         .param-item input {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1em;
+            border-radius: 8px;
+            font-size: 0.95em;
             text-align: center;
-            transition: border-color 0.3s;
         }
         
         .param-item input:focus {
@@ -149,12 +170,12 @@
         /* 按钮 */
         .btn {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 12px;
-            font-size: 1.1em;
+            border-radius: 10px;
+            font-size: 1em;
             font-weight: bold;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -162,7 +183,7 @@
         
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
         
         .btn:disabled {
@@ -183,67 +204,68 @@
         
         .pattern-display {
             background: #f5f5f5;
-            border-radius: 15px;
-            padding: 15px;
+            border-radius: 12px;
+            padding: 12px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .pattern-display img {
             max-width: 100%;
-            max-height: 700px;
-            border-radius: 10px;
+            max-height: 800px;
+            border-radius: 8px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
         
         /* 统计信息 */
         .stats-info {
             display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
+            gap: 12px;
+            margin-bottom: 12px;
             flex-wrap: wrap;
         }
         
         .stat-badge {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.85em;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
         }
         
         /* 颜色详细统计 */
         .color-stats {
-            margin-top: 20px;
+            margin-top: 15px;
         }
         
         .color-stats h3 {
             color: #333;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
+            font-size: 1em;
         }
         
         .color-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            max-height: 250px;
+            gap: 6px;
+            max-height: 200px;
             overflow-y: auto;
         }
         
         .color-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             background: #f8f9ff;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8em;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
             border: 1px solid #ddd;
         }
         
         .color-swatch {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             border: 2px solid #ddd;
             flex-shrink: 0;
@@ -253,7 +275,7 @@
         .loading {
             display: none;
             text-align: center;
-            padding: 40px;
+            padding: 30px;
         }
         
         .loading.active {
@@ -261,37 +283,18 @@
         }
         
         .spinner {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border: 4px solid #f3f3f3;
             border-top: 4px solid #667eea;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            margin: 0 auto 15px;
         }
         
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-        
-        /* 说明 */
-        .info-box {
-            background: #f8f9ff;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            font-size: 0.9em;
-            color: #666;
-        }
-        
-        .info-box h4 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .info-box ul {
-            margin-left: 20px;
         }
         
         /* 响应式 */
@@ -300,17 +303,13 @@
                 grid-template-columns: 1fr;
             }
             
-            .params {
-                grid-template-columns: 1fr;
-            }
-            
             .header h1 {
-                font-size: 1.6em;
+                font-size: 1.5em;
             }
             
             .student-info {
                 flex-direction: column;
-                gap: 10px;
+                gap: 8px;
             }
         }
     </style>
@@ -324,9 +323,6 @@
                 <span>📚 学号：202535720114</span>
                 <span>👤 姓名：廖佳煜</span>
             </div>
-            <p style="margin-top: 15px; color: #666;">
-                🤖 基于221色拼豆色库 | 标准方格图纸格式 | 自动边缘黑色勾勒
-            </p>
         </div>
         
         <div class="main-content">
@@ -336,7 +332,7 @@
                 
                 <div class="upload-area" onclick="document.getElementById('fileInput').click()">
                     <div class="upload-icon">🖼️</div>
-                    <div class="upload-text">点击选择图片或拖拽到此处</div>
+                    <div class="upload-text">点击选择图片<br>（支持任意尺寸，自动适配网格）</div>
                     <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
                     <img id="previewImg" class="preview-img" style="display:none;">
                 </div>
@@ -344,23 +340,24 @@
                 <div class="info-box">
                     <h4>📋 图纸格式说明</h4>
                     <ul>
-                        <li>白色网格背景</li>
+                        <li>白色网格背景 + 浅灰网格线</li>
                         <li>顶部/左侧标注坐标</li>
-                        <li>每个格子显示色号</li>
+                        <li>每个格子显示拼豆色号</li>
                         <li>边缘用黑色勾勒</li>
                         <li>底部显示颜色统计</li>
+                        <li><b>所有像素都有色号</b></li>
                     </ul>
                 </div>
                 
-                <h2>⚙️ 参数设置</h2>
+                <h2>⚙️ 参数设置（可选）</h2>
                 <div class="params">
                     <div class="param-item">
-                        <label>宽度 (珠子数)</label>
-                        <input type="number" id="width" value="32" min="8" max="64">
+                        <label>宽度</label>
+                        <input type="number" id="width" placeholder="原图宽度" min="8" max="128">
                     </div>
                     <div class="param-item">
-                        <label>高度 (珠子数)</label>
-                        <input type="number" id="height" value="32" min="8" max="64">
+                        <label>高度</label>
+                        <input type="number" id="height" placeholder="原图高度" min="8" max="128">
                     </div>
                 </div>
                 
@@ -374,8 +371,8 @@
                 <h2>📋 生成结果</h2>
                 
                 <div class="stats-info">
-                    <span class="stat-badge" id="sizeInfo">尺寸：32×32</span>
-                    <span class="stat-badge" id="beadCount">总珠子：0</span>
+                    <span class="stat-badge" id="sizeInfo">尺寸：-</span>
+                    <span class="stat-badge" id="beadCount">总格子：0</span>
                     <span class="stat-badge" id="colorCount">使用颜色：0种</span>
                 </div>
                 
@@ -384,7 +381,7 @@
                 </div>
                 
                 <div class="color-stats">
-                    <h3>🎨 颜色详细统计</h3>
+                    <h3>🎨 颜色统计（按使用数量排序）</h3>
                     <div class="color-list" id="colorList"></div>
                 </div>
             </div>
@@ -432,13 +429,15 @@
                 return;
             }
             
-            const width = document.getElementById('width').value;
-            const height = document.getElementById('height').value;
+            const widthVal = document.getElementById('width').value;
+            const heightVal = document.getElementById('height').value;
             
             const formData = new FormData();
             formData.append('image', selectedFile);
-            formData.append('width', width);
-            formData.append('height', height);
+            
+            // 只有填写了才传参数
+            if (widthVal) formData.append('width', widthVal);
+            if (heightVal) formData.append('height', heightVal);
             
             // 显示loading
             document.getElementById('loading').classList.add('active');
@@ -459,11 +458,8 @@
                     // 显示结果
                     document.getElementById('patternImg').src = 'data:image/png;base64,' + data.pattern_image;
                     document.getElementById('sizeInfo').textContent = `尺寸：${data.width}×${data.height}`;
-                    document.getElementById('beadCount').textContent = `总珠子：${data.total_beads}`;
-                    
-                    // 统计非白色颜色数量
-                    const nonWhiteColors = Object.entries(data.color_counts).filter(([k, v]) => k !== 'T1').length;
-                    document.getElementById('colorCount').textContent = `使用颜色：${nonWhiteColors}种`;
+                    document.getElementById('beadCount').textContent = `总格子：${data.total_beads}`;
+                    document.getElementById('colorCount').textContent = `使用颜色：${Object.keys(data.color_counts).length}种`;
                     
                     // 显示颜色详细统计
                     const colorList = document.getElementById('colorList');
@@ -473,7 +469,6 @@
                     const colOrder = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'M': 8, 'P': 9, 'Q': 10, 'R': 11, 'T': 12, 'ZG': 13};
                     
                     const sortedColors = Object.entries(data.color_counts)
-                        .filter(([k, v]) => k !== 'T1')
                         .sort((a, b) => {
                             const colA = a[0].match(/^[A-Z]+/)[0];
                             const colB = b[0].match(/^[A-Z]+/)[0];
