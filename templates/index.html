@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拼豆图纸AI生成器 - 廖佳煜</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* 顶部信息栏 */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header h1 span {
+            font-size: 1.2em;
+        }
+        
+        .student-info {
+            display: inline-flex;
+            gap: 30px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 15px 30px;
+            border-radius: 50px;
+            margin-top: 15px;
+        }
+        
+        .student-info span {
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* 上传区域 */
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .upload-area:hover {
+            border-color: #764ba2;
+            background: #f8f9ff;
+        }
+        
+        .upload-area input {
+            display: none;
+        }
+        
+        .upload-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .preview-img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        
+        /* 参数设置 */
+        .params {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .param-item {
+            text-align: center;
+        }
+        
+        .param-item label {
+            display: block;
+            color: #666;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+        
+        .param-item input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+        
+        .param-item input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        /* 按钮 */
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* 结果区域 */
+        .result-card {
+            display: none;
+        }
+        
+        .result-card.active {
+            display: block;
+        }
+        
+        .pattern-display {
+            background: #f5f5f5;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .pattern-display img {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        /* 颜色统计 */
+        .color-stats {
+            margin-top: 20px;
+        }
+        
+        .color-stats h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .color-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .color-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8f9ff;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        .color-swatch {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+        }
+        
+        /* loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .params {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .student-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部信息 -->
+        <div class="header">
+            <h1>🎨 <span>拼豆图纸AI生成器</span></h1>
+            <div class="student-info">
+                <span>📚 学号：202535720114</span>
+                <span>👤 姓名：廖佳煜</span>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <!-- 左侧：上传和参数 -->
+            <div class="card">
+                <h2>📤 上传图片</h2>
+                
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">🖼️</div>
+                    <div class="upload-text">点击选择图片或拖拽到此处</div>
+                    <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+                    <img id="previewImg" class="preview-img" style="display:none;">
+                </div>
+                
+                <h2>⚙️ 参数设置</h2>
+                <div class="params">
+                    <div class="param-item">
+                        <label>宽度 (珠子数)</label>
+                        <input type="number" id="width" value="32" min="8" max="64">
+                    </div>
+                    <div class="param-item">
+                        <label>高度 (珠子数)</label>
+                        <input type="number" id="height" value="32" min="8" max="64">
+                    </div>
+                    <div class="param-item">
+                        <label>颜色数量</label>
+                        <input type="number" id="colors" value="16" min="4" max="32">
+                    </div>
+                </div>
+                
+                <button class="btn" id="generateBtn" onclick="generatePattern()">
+                    🚀 生成拼豆图纸
+                </button>
+            </div>
+            
+            <!-- 右侧：结果 -->
+            <div class="card result-card" id="resultCard">
+                <h2>📋 生成结果</h2>
+                
+                <div class="pattern-display">
+                    <img id="patternImg" src="" alt="拼豆图纸">
+                </div>
+                
+                <div class="color-stats">
+                    <h3>🎨 所需颜色清单</h3>
+                    <div class="color-list" id="colorList"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>AI正在生成图纸，请稍候...</p>
+        </div>
+    </div>
+    
+    <script>
+        let selectedFile = null;
+        
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('previewImg');
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        async function generatePattern() {
+            if (!selectedFile) {
+                alert('请先选择图片！');
+                return;
+            }
+            
+            const width = document.getElementById('width').value;
+            const height = document.getElementById('height').value;
+            const colors = document.getElementById('colors').value;
+            
+            const formData = new FormData();
+            formData.append('image', selectedFile);
+            formData.append('width', width);
+            formData.append('height', height);
+            formData.append('colors', colors);
+            
+            // 显示loading
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('resultCard').classList.remove('active');
+            document.getElementById('generateBtn').disabled = true;
+            
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert('生成失败：' + data.error);
+                } else {
+                    // 显示结果
+                    document.getElementById('patternImg').src = 'data:image/png;base64,' + data.pattern_image;
+                    
+                    // 显示颜色统计
+                    const colorList = document.getElementById('colorList');
+                    colorList.innerHTML = '';
+                    for (const [color, count] of Object.entries(data.color_counts)) {
+                        const item = document.createElement('div');
+                        item.className = 'color-item';
+                        item.innerHTML = `
+                            <div class="color-swatch" style="background-color: ${color}"></div>
+                            <span>${color}: ${count}颗</span>
+                        `;
+                        colorList.appendChild(item);
+                    }
+                    
+                    document.getElementById('resultCard').classList.add('active');
+                }
+            } catch (error) {
+                alert('请求失败：' + error.message);
+            } finally {
+                document.getElementById('loading').classList.remove('active');
+                document.getElementById('generateBtn').disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
