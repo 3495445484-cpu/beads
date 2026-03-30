@@ -2,12 +2,12 @@
 拼豆图纸AI生成器 - Perler Bead Pattern Generator
 作者：廖佳煜
 学号：202535720114
-版本：v3 - 完整221色+拼豆色库
+版本：v4 - 符合标准拼豆图纸格式
 """
 
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import io
 import base64
@@ -31,7 +31,7 @@ PERLER_COLORS = {
     'B1': '#E6EE31', 'B2': '#63F347', 'B3': '#9EF780', 'B4': '#5DE035',
     'B5': '#35E352', 'B6': '#65E2A6', 'B7': '#3DAF80', 'B8': '#1C9C4F',
     'B9': '#27523A', 'B10': '#95D3C2', 'B11': '#5D722A', 'B12': '#166F41',
-    'B13': '#CAEB7B', 'B14': '#ADE946', 'B15': '#2E5132', 'B16': '#C5ED9C',
+    'B13': '#CAE7B', 'B14': '#ADE946', 'B15': '#2E5132', 'B16': '#C5ED9C',
     'B17': '#9BB13A', 'B18': '#E6EE49', 'B19': '#24B88C', 'B20': '#C2F0CC',
     'B21': '#156A6B', 'B22': '#0B3C43', 'B23': '#303A21', 'B24': '#EEFCA5',
     'B25': '#4E846D', 'B26': '#8D7A35', 'B27': '#CCE1AF', 'B28': '#9EE5B9',
@@ -83,10 +83,11 @@ PERLER_COLORS = {
     
     # H列 - 灰黑色系（20色）
     'H3': '#B6B1BA', 'H4': '#89858C', 'H5': '#48464E', 'H6': '#2F2B2F',
-    'H8': '#E7D6DB', 'H9': '#EDEDED', 'H10': '#EEE9EA', 'H11': '#CECDD5',
-    'H12': '#FFF5ED', 'H13': '#F5ECD2', 'H14': '#CFD7D3', 'H15': '#98A6A8',
-    'H16': '#1D1414', 'H17': '#F1EDED', 'H18': '#FFFDF0', 'H19': '#F6EFE2',
-    'H20': '#949FA3', 'H21': '#FFFBE1', 'H22': '#CACAD4', 'H23': '#9A9D94',
+    'H7': '#000000', 'H8': '#E7D6DB', 'H9': '#EDEDED', 'H10': '#EEE9EA',
+    'H11': '#CECDD5', 'H12': '#FFF5ED', 'H13': '#F5ECD2', 'H14': '#CFD7D3',
+    'H15': '#98A6A8', 'H16': '#1D1414', 'H17': '#F1EDED', 'H18': '#FFFDF0',
+    'H19': '#F6EFE2', 'H20': '#949FA3', 'H21': '#FFFBE1', 'H22': '#CACAD4',
+    'H23': '#9A9D94',
     
     # M列 - 大地色系（15色）
     'M1': '#BCC6B8', 'M2': '#8AA386', 'M3': '#697D80', 'M4': '#E3D2BC',
@@ -122,8 +123,9 @@ PERLER_COLORS = {
     'ZG5': '#849DC6', 'ZG6': '#94BFE2', 'ZG7': '#E2A9D2', 'ZG8': '#AB91C0',
 }
 
-# 将hex转为RGB元组
+
 def hex_to_rgb(hex_color):
+    """将hex颜色转为RGB元组"""
     hex_color = hex_color.lstrip('#')
     return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
@@ -146,21 +148,44 @@ def find_closest_perler_color(rgb):
     return closest
 
 
+def detect_edge(pixels, y, x, height, width):
+    """检测是否是边缘像素（需要用黑色勾勒）"""
+    if y == 0 or y == height - 1 or x == 0 or x == width - 1:
+        return True
+    pixel_rgb = tuple(pixels[y, x])
+    pixel_color = find_closest_perler_color(pixel_rgb)
+    
+    # 检查上下左右是否为空（白色T1）
+    neighbors = [
+        tuple(pixels[y-1, x]) if y > 0 else (255, 255, 255),
+        tuple(pixels[y+1, x]) if y < height - 1 else (255, 255, 255),
+        tuple(pixels[y, x-1]) if x > 0 else (255, 255, 255),
+        tuple(pixels[y, x+1]) if x < width - 1 else (255, 255, 255),
+    ]
+    
+    for neighbor in neighbors:
+        neighbor_color = find_closest_perler_color(neighbor)
+        if neighbor_color == 'T1':  # 白色背景
+            return True
+        if neighbor_color != pixel_color:
+            return True
+    return False
+
+
 def generate_pattern(image_data, bead_width=32, bead_height=32):
-    """生成拼豆图纸"""
+    """生成符合标准的拼豆图纸"""
     # 读取图片
     img = Image.open(io.BytesIO(image_data))
     
-    # 调整尺寸（每个像素变成一个珠子）
+    # 调整尺寸
     img = img.resize((bead_width, bead_height), Image.Resampling.LANCZOS)
-    
-    # 转换为RGB
     img = img.convert('RGB')
     pixels = np.array(img)
     
-    # 为每个像素分配拼豆颜色
+    # 为每个像素分配拼豆颜色，同时检测边缘
     pattern = []
     color_counts = {}
+    edge_mask = np.zeros((bead_height, bead_width), dtype=bool)
     
     for y in range(bead_height):
         row = []
@@ -168,46 +193,150 @@ def generate_pattern(image_data, bead_width=32, bead_height=32):
             pixel_rgb = tuple(pixels[y, x])
             perler_color = find_closest_perler_color(pixel_rgb)
             row.append(perler_color)
-            
-            # 统计颜色使用
             color_counts[perler_color] = color_counts.get(perler_color, 0) + 1
         pattern.append(row)
     
-    # 生成图纸图片
-    bead_size = 20  # 每个珠子显示的像素大小
-    pattern_img = Image.new('RGB', (bead_width * bead_size, bead_height * bead_size))
-    
-    for y, row in enumerate(pattern):
-        for x, color_name in enumerate(row):
-            hex_color = PERLER_COLORS.get(color_name, '#FFFFFF')
-            color_rgb = hex_to_rgb(hex_color)
-            for dy in range(bead_size):
-                for dx in range(bead_size):
-                    pattern_img.putpixel((x * bead_size + dx, y * bead_size + dy), color_rgb)
-    
-    # 添加网格线
+    # 检测边缘
     for y in range(bead_height):
         for x in range(bead_width):
-            for i in range(bead_size):
-                # 垂直线
-                pattern_img.putpixel((x * bead_size + i, y * bead_size), (200, 200, 200))
-                pattern_img.putpixel((x * bead_size + i, y * bead_size + bead_size - 1), (200, 200, 200))
-                # 水平线
-                pattern_img.putpixel((x * bead_size, y * bead_size + i), (200, 200, 200))
-                pattern_img.putpixel((x * bead_size + bead_size - 1, y * bead_size + i), (200, 200, 200))
+            if pattern[y][x] != 'T1':  # 非空白
+                if detect_edge(pixels, y, x, bead_height, bead_width):
+                    edge_mask[y][x] = True
+    
+    # 生成图纸
+    cell_size = 30  # 每个格子的像素大小
+    margin = 2  # 图案边缘留白
+    
+    # 画布尺寸：顶部行号区 + 左侧列号区 + 图案区 + 底部统计区
+    header_height = cell_size  # 顶部行号
+    left_width = cell_size  # 左侧列号
+    stats_height = cell_size * 2  # 底部统计
+    
+    canvas_width = left_width + (bead_width + margin * 2) * cell_size
+    canvas_height = header_height + (bead_height + margin * 2) * cell_size + stats_height
+    
+    # 创建白色画布
+    canvas = Image.new('RGB', (canvas_width, canvas_height), 'white')
+    draw = ImageDraw.Draw(canvas)
+    
+    # 绘制网格和图案
+    for y in range(bead_height):
+        for x in range(bead_width):
+            color_name = pattern[y][x]
+            hex_color = PERLER_COLORS.get(color_name, '#FFFFFF')
+            rgb = hex_to_rgb(hex_color)
+            
+            # 计算格子位置（考虑边缘留白）
+            px = left_width + (x + margin) * cell_size
+            py = header_height + (y + margin) * cell_size
+            
+            # 填充颜色
+            draw.rectangle([px, py, px + cell_size - 1, py + cell_size - 1], fill=rgb)
+            
+            # 如果是边缘，用黑色勾勒
+            if edge_mask[y][x]:
+                draw.rectangle([px, py, px + cell_size - 1, py + cell_size - 1], outline='#000000', width=2)
+            
+            # 绘制网格线
+            draw.rectangle([px, py, px + cell_size - 1, py + cell_size - 1], outline='#CCCCCC', width=1)
+            
+            # 在格子中央写色号（非空白格子）
+            if color_name != 'T1':
+                # 黑色文字
+                text_color = '#000000'
+                # 小号字体
+                font_size = max(8, cell_size // 3)
+                try:
+                    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
+                except:
+                    font = ImageFont.load_default()
+                
+                # 获取文字边界
+                bbox = draw.textbbox((0, 0), color_name, font=font)
+                text_width = bbox[2] - bbox[0]
+                text_height = bbox[3] - bbox[1]
+                
+                # 居中绘制
+                text_x = px + (cell_size - text_width) // 2
+                text_y = py + (cell_size - text_height) // 2
+                draw.text((text_x, text_y), color_name, fill=text_color, font=font)
+    
+    # 绘制顶部行号
+    for x in range(bead_width):
+        px = left_width + (x + margin) * cell_size + cell_size // 2
+        num = str(x + 1)
+        try:
+            font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 10)
+        except:
+            font = ImageFont.load_default()
+        bbox = draw.textbbox((0, 0), num, font=font)
+        text_width = bbox[2] - bbox[0]
+        draw.text((px - text_width // 2, 2), num, fill='#666666', font=font)
+    
+    # 绘制左侧列号
+    for y in range(bead_height):
+        py = header_height + (y + margin) * cell_size + cell_size // 2
+        num = str(y + 1)
+        try:
+            font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 10)
+        except:
+            font = ImageFont.load_default()
+        bbox = draw.textbbox((0, 0), num, font=font)
+        text_height = bbox[3] - bbox[1]
+        draw.text((2, py - text_height // 2), num, fill='#666666', font=font)
+    
+    # 绘制底部统计栏
+    # 排序颜色：按使用数量降序，数量相同按A→B→C→D→E→F→G→H→M→P→Q→R→T→ZG顺序
+    def sort_key(item):
+        color_name = item[0]
+        count = item[1]
+        col_order = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'M': 8, 'P': 9, 'Q': 10, 'R': 11, 'T': 12, 'ZG': 13}
+        col = ''.join(c for c in color_name if c.isalpha())
+        col_idx = col_order.get(col, 14)
+        num = int(''.join(c for c in color_name if c.isdigit()) or '0')
+        return (-count, col_idx, num)
+    
+    sorted_colors = sorted(color_counts.items(), key=sort_key)
+    
+    stats_text = ' '.join([f'{name}({count})' for name, count in sorted_colors if name != 'T1'])
+    
+    stats_y = header_height + (bead_height + margin * 2) * cell_size + 10
+    try:
+        font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 11)
+    except:
+        font = ImageFont.load_default()
+    
+    # 简化统计文字（如果太长）
+    if len(stats_text) > 200:
+        # 分多行显示
+        parts = stats_text.split()
+        line1 = []
+        line2 = []
+        current_len = 0
+        for part in parts:
+            if current_len + len(part) < 100:
+                line1.append(part)
+                current_len += len(part) + 1
+            else:
+                line2.append(part)
+        draw.text((5, stats_y), ' '.join(line1), fill='#333333', font=font)
+        if line2:
+            draw.text((5, stats_y + 15), ' '.join(line2), fill='#333333', font=font)
+    else:
+        draw.text((5, stats_y), stats_text, fill='#333333', font=font)
     
     # 转换为base64
     img_buffer = io.BytesIO()
-    pattern_img.save(img_buffer, format='PNG')
+    canvas.save(img_buffer, format='PNG')
     img_base64 = base64.b64encode(img_buffer.getvalue()).decode()
     
     return {
-        'pattern': pattern,
         'pattern_image': img_base64,
         'color_counts': color_counts,
         'width': bead_width,
         'height': bead_height,
-        'total_beads': bead_width * bead_height
+        'total_beads': sum(v for k, v in color_counts.items() if k != 'T1'),
+        'stats': stats_text
     }
 
 

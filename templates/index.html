@@ -19,7 +19,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         
@@ -35,12 +35,8 @@
         
         .header h1 {
             color: #333;
-            font-size: 2.5em;
+            font-size: 2.2em;
             margin-bottom: 10px;
-        }
-        
-        .header h1 span {
-            font-size: 1.2em;
         }
         
         .student-info {
@@ -60,14 +56,14 @@
         
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 1.5fr;
+            grid-template-columns: 1fr 2fr;
             gap: 30px;
         }
         
         .card {
             background: white;
             border-radius: 20px;
-            padding: 30px;
+            padding: 25px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
         }
         
@@ -83,7 +79,7 @@
         .upload-area {
             border: 3px dashed #667eea;
             border-radius: 15px;
-            padding: 40px;
+            padding: 30px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
@@ -100,18 +96,18 @@
         }
         
         .upload-icon {
-            font-size: 4em;
-            margin-bottom: 15px;
+            font-size: 3em;
+            margin-bottom: 10px;
         }
         
         .upload-text {
             color: #666;
-            font-size: 1.1em;
+            font-size: 1em;
         }
         
         .preview-img {
             max-width: 100%;
-            max-height: 200px;
+            max-height: 180px;
             border-radius: 10px;
             margin-top: 15px;
         }
@@ -153,12 +149,12 @@
         /* 按钮 */
         .btn {
             width: 100%;
-            padding: 18px;
+            padding: 16px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 12px;
-            font-size: 1.2em;
+            font-size: 1.1em;
             font-weight: bold;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -188,19 +184,35 @@
         .pattern-display {
             background: #f5f5f5;
             border-radius: 15px;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
             margin-bottom: 20px;
         }
         
         .pattern-display img {
             max-width: 100%;
-            max-height: 500px;
+            max-height: 700px;
             border-radius: 10px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
         
-        /* 颜色统计 */
+        /* 统计信息 */
+        .stats-info {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+        
+        /* 颜色详细统计 */
         .color-stats {
             margin-top: 20px;
         }
@@ -214,7 +226,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            max-height: 300px;
+            max-height: 250px;
             overflow-y: auto;
         }
         
@@ -223,15 +235,15 @@
             align-items: center;
             gap: 6px;
             background: #f8f9ff;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
             border: 1px solid #ddd;
         }
         
         .color-swatch {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             border: 2px solid #ddd;
             flex-shrink: 0;
@@ -263,24 +275,27 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* 统计信息 */
-        .stats-info {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
+        /* 说明 */
+        .info-box {
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #666;
         }
         
-        .stat-badge {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9em;
+        .info-box h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .info-box ul {
+            margin-left: 20px;
         }
         
         /* 响应式 */
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .main-content {
                 grid-template-columns: 1fr;
             }
@@ -290,7 +305,7 @@
             }
             
             .header h1 {
-                font-size: 1.8em;
+                font-size: 1.6em;
             }
             
             .student-info {
@@ -310,7 +325,7 @@
                 <span>👤 姓名：廖佳煜</span>
             </div>
             <p style="margin-top: 15px; color: #666;">
-                🤖 基于221色拼豆色库 | 上传图片自动转换为拼豆制作图纸
+                🤖 基于221色拼豆色库 | 标准方格图纸格式 | 自动边缘黑色勾勒
             </p>
         </div>
         
@@ -324,6 +339,17 @@
                     <div class="upload-text">点击选择图片或拖拽到此处</div>
                     <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
                     <img id="previewImg" class="preview-img" style="display:none;">
+                </div>
+                
+                <div class="info-box">
+                    <h4>📋 图纸格式说明</h4>
+                    <ul>
+                        <li>白色网格背景</li>
+                        <li>顶部/左侧标注坐标</li>
+                        <li>每个格子显示色号</li>
+                        <li>边缘用黑色勾勒</li>
+                        <li>底部显示颜色统计</li>
+                    </ul>
                 </div>
                 
                 <h2>⚙️ 参数设置</h2>
@@ -349,7 +375,7 @@
                 
                 <div class="stats-info">
                     <span class="stat-badge" id="sizeInfo">尺寸：32×32</span>
-                    <span class="stat-badge" id="beadCount">总珠子：1024</span>
+                    <span class="stat-badge" id="beadCount">总珠子：0</span>
                     <span class="stat-badge" id="colorCount">使用颜色：0种</span>
                 </div>
                 
@@ -358,7 +384,7 @@
                 </div>
                 
                 <div class="color-stats">
-                    <h3>🎨 所需颜色清单（按色号分类）</h3>
+                    <h3>🎨 颜色详细统计</h3>
                     <div class="color-list" id="colorList"></div>
                 </div>
             </div>
@@ -434,21 +460,28 @@
                     document.getElementById('patternImg').src = 'data:image/png;base64,' + data.pattern_image;
                     document.getElementById('sizeInfo').textContent = `尺寸：${data.width}×${data.height}`;
                     document.getElementById('beadCount').textContent = `总珠子：${data.total_beads}`;
-                    document.getElementById('colorCount').textContent = `使用颜色：${Object.keys(data.color_counts).length}种`;
                     
-                    // 显示颜色统计 - 按列分组显示
+                    // 统计非白色颜色数量
+                    const nonWhiteColors = Object.entries(data.color_counts).filter(([k, v]) => k !== 'T1').length;
+                    document.getElementById('colorCount').textContent = `使用颜色：${nonWhiteColors}种`;
+                    
+                    // 显示颜色详细统计
                     const colorList = document.getElementById('colorList');
                     colorList.innerHTML = '';
                     
-                    // 排序颜色（按列字母+数字）
-                    const sortedColors = Object.entries(data.color_counts).sort((a, b) => {
-                        const colA = a[0].match(/^[A-Z]/)[0];
-                        const colB = b[0].match(/^[A-Z]/)[0];
-                        if (colA !== colB) return colA.localeCompare(colB);
-                        const numA = parseInt(a[0].slice(1));
-                        const numB = parseInt(b[0].slice(1));
-                        return numA - numB;
-                    });
+                    // 排序
+                    const colOrder = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'M': 8, 'P': 9, 'Q': 10, 'R': 11, 'T': 12, 'ZG': 13};
+                    
+                    const sortedColors = Object.entries(data.color_counts)
+                        .filter(([k, v]) => k !== 'T1')
+                        .sort((a, b) => {
+                            const colA = a[0].match(/^[A-Z]+/)[0];
+                            const colB = b[0].match(/^[A-Z]+/)[0];
+                            if (colOrder[colA] !== colOrder[colB]) return colOrder[colA] - colOrder[colB];
+                            const numA = parseInt(a[0].slice(colA.length));
+                            const numB = parseInt(b[0].slice(colB.length));
+                            return numA - numB;
+                        });
                     
                     for (const [color, count] of sortedColors) {
                         const hexColor = colorMap[color] || '#FFFFFF';
@@ -456,7 +489,7 @@
                         item.className = 'color-item';
                         item.innerHTML = `
                             <div class="color-swatch" style="background-color: ${hexColor}"></div>
-                            <span><b>${color}</b>: ${count}颗</span>
+                            <span><b>${color}</b>(${count})</span>
                         `;
                         colorList.appendChild(item);
                     }
